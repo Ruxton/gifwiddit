@@ -107,7 +107,7 @@ mb.on('ready', function ready () {
   });
 
     // Register a 'ctrl+shift+space' shortcut listener.
-  var ret = globalShortcut.register('ctrl+shift+space', function () {
+  var ret = globalShortcut.register('command+shift+g', function () {
     mb.window.isVisible() ? mb.hideWindow() : mb.showWindow()
   })
 
