@@ -5,25 +5,67 @@ var images = []
 
 var searching = false
 
+function isCompatibleURL(str) {
+  var pattern = /^https?:\/\/(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:\/[^\/#?]+)+\.(?:jpe?g|gif|png|bmp)$/i
+  return pattern.test(str);
+}
+
 function search (query) {
   if (searching) {
     clearTimeout(searching)
   }
   if(query.trim() == '') {
-    addImages(images)
+    addImageResults(images)
   } else {
     searching = setTimeout(function () {
       var results = images.filter(function(image){
-        return (image.keywords.match(query) && image)
+        return ((image.keywords.match(query) || image.url.match(query)) && image)
       });
-      addImages(results)
+      addImageResults(results)
+      if(results.length == 0) {
+        if(isCompatibleURL(query)) {
+          setupAddNewImage(query);
+        }
+      }
     }, 100)
   }
 }
 
-function addImage(element, index, array) {
-  // var wrap = document.createElement("div");
+function addToLibrary() {
+  var url = searchInput.value
+  var tags = document.getElementById('tags').value
 
+  var obj = {
+    'url': url,
+    'keywords': tags
+  }
+
+  ipc.send("add-to-library",obj)
+}
+
+function setupAddNewImage(query) {
+  var button = document.createElement("button")
+  button.innerText = "Add to library.."
+  button.setAttribute("id","add-to-library");
+  button.setAttribute("onclick","addToLibrary()")
+
+  var input = document.createElement("input")
+  input.setAttribute("id","tags")
+  input.setAttribute("type","text")
+
+  var text1 = document.createElement("p")
+  text1.innerText = "Enter tags "
+  text1.appendChild(input)
+
+  var text2 = document.createElement("p")
+  text2.innerText = "Hit enter to "
+  text2.appendChild(button)
+
+  document.getElementById('images').appendChild(text1)
+  document.getElementById('images').appendChild(text2)
+}
+
+function addImageResult(element, index, array) {
   var elem = document.createElement("img");
   elem.setAttribute("src", element.url);
   elem.setAttribute("width", "100%");
@@ -39,7 +81,6 @@ function addImage(element, index, array) {
 
   wrap.appendChild(elem);
   wrap.appendChild(tags);
-
 
   document.getElementById('images').appendChild(wrap);
 }
@@ -57,11 +98,11 @@ function sendImage(element) {
   ipc.send("url-to-clipboard",element.src);
 }
 
-function addImages(data) {
+function addImageResults(data) {
   var node = document.getElementById("images");
   var last;
   while (last = node.lastChild) node.removeChild(last);
-  data.forEach(addImage)
+  data.forEach(addImageResult)
 }
 
 searchInput.focus()
@@ -85,17 +126,17 @@ document.addEventListener('keydown', function (event) {
       element = event.target.previousSibling;
       element.focus();
       element.scrollIntoView();
-      event.preventDefault();
+      killEvent(event)
     }
   } else if(event.keyCode == 40) {
     if(event.target.className.match('js-search')) {
       first.focus();
-      event.preventDefault()
+      killEvent(event)
     } else if (event.target.className.match('wrapper')) {
       element = event.target.nextSibling;
       element.focus();
       element.scrollIntoView();
-      event.preventDefault();
+      killEvent(event)
     }
   } else if(event.keyCode == 13 && event.target.className.match('wrapper')) {
     sendImage(event.target.children[0]);

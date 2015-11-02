@@ -6,10 +6,12 @@ Overview
 
 An electron app that aims to be like Gifwit
 
-Source Requirements
+Uses
 ------------
 
-* Electron
+* [Electron](http://electron.atom.io/)
+* [Max Ogden's Menubar](https://github.com/maxogden/menubar)
+
 
 Meta
 ----

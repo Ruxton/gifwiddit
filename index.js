@@ -64,6 +64,8 @@ mb.app.on('will-quit', function () {
 
 mb.on('ready', function ready () {
   var menu = Menu.buildFromTemplate(menuTemplate)
+  var filepath = path.join(mb.app.getPath('userData'), 'library.gifwit')
+
   Menu.setApplicationMenu(menu)
 
   var window = mb.window;
@@ -71,7 +73,6 @@ mb.on('ready', function ready () {
   window.webContents.on('did-finish-load', function() {
     try {
      //test to see if settings exist
-     var filepath = path.join(mb.app.getPath('userData'), 'library.gifwit')
      fs.openSync(filepath, 'r+'); //throws error if file doesn't exist
      var data=fs.readFileSync(filepath); //file exists, get the contents
      mb.gifwit = JSON.parse(data); //turn to js object
@@ -98,8 +99,20 @@ mb.on('ready', function ready () {
   })
 
   ipc.on('open-config',function () {
-    var filepath = path.join(mb.app.getPath('userData'), 'library.gifwit')
     shell.showItemInFolder(filepath)
+  })
+
+  ipc.on('add-to-library',function(data,returnVal) {
+    mb.gifwit.images.push(returnVal)
+    try {
+      var fd = fs.openSync(filepath, 'w+');
+      fs.writeSync(fd,JSON.stringify(mb.gifwit))
+      console.log("Library update saved")
+    }
+    catch (err) {
+      console.log("Error saving library update")
+    }
+
   })
 
   mb.on('show', function () {
