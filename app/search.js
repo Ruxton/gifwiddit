@@ -138,18 +138,27 @@ document.addEventListener('keydown', function (event) {
       element.scrollIntoView();
       killEvent(event)
     }
-  } else if(event.keyCode == 13 && event.target.className.match('wrapper')) {
-    sendImage(event.target.children[0]);
+  } else if(event.keyCode == 13) {
+    if(event.target.className.match('wrapper')) {
+      sendImage(event.target.children[0]);
+    } else if (event.target.id == 'tags') {
+      addToLibrary();
+    }
   }
 });
 
 
 ipc.on('data-added', function(data) {
   images = data
+  searchInput.value = ""
   search('')
 });
 
 ipc.on('show', function () {
   searchInput.focus();
   window.scrollTo(0,0)
+});
+
+ipc.on('save-error', function(err) {
+  alert("Error saving - "+err)
 });

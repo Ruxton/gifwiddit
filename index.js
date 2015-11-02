@@ -72,21 +72,21 @@ mb.on('ready', function ready () {
   // window.openDevTools();
   window.webContents.on('did-finish-load', function() {
     try {
-     //test to see if settings exist
-     fs.openSync(filepath, 'r+'); //throws error if file doesn't exist
-     var data=fs.readFileSync(filepath); //file exists, get the contents
-     mb.gifwit = JSON.parse(data); //turn to js object
-     window.webContents.send('data-added',mb.gifwit.images);
-     } catch (err) {
-       try {
-          var fd = fs.openSync(filepath, 'w+');
-          console.log("Created gifwit library");
-        } catch (err) {
-          console.log("Error creating Library file: " + JSON.stringify(err));
-          throw err;
-        }
-     }
-
+      //test to see if settings exist
+      fs.openSync(filepath, 'r+'); //throws error if file doesn't exist
+      var data=fs.readFileSync(filepath); //file exists, get the contents
+      mb.gifwit = JSON.parse(data); //turn to js object
+      window.webContents.send('data-added',mb.gifwit.images);
+    } catch (err) {
+      try {
+        var fd = fs.openSync(filepath, 'w+');
+        mb.gifwit = {version: 1,images:[]}
+        console.log("Created gifwit library");
+      } catch (err) {
+        console.log("Error creating Library file: " + JSON.stringify(err));
+        throw err;
+      }
+    }
   })
 
   ipc.on('url-to-clipboard',function(data,returnVal) {
@@ -108,9 +108,11 @@ mb.on('ready', function ready () {
       var fd = fs.openSync(filepath, 'w+');
       fs.writeSync(fd,JSON.stringify(mb.gifwit))
       console.log("Library update saved")
+      window.webContents.send('data-added',mb.gifwit.images);
     }
     catch (err) {
       console.log("Error saving library update")
+      window.webContents.send('save-error',err);
     }
 
   })
