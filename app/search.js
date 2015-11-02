@@ -69,6 +69,14 @@ searchInput.addEventListener('input', function (event) {
   search(this.value)
 })
 
+document.getElementById('quit').addEventListener('click', function (event) {
+  ipc.send("quit")
+})
+
+document.getElementById('open-config').addEventListener('click', function (event) {
+  ipc.send("open-config")
+})
+
 document.addEventListener('keydown', function (event) {
   var node = document.getElementById("images")
   var first = node.querySelector('a.wrapper');
@@ -93,6 +101,7 @@ document.addEventListener('keydown', function (event) {
     sendImage(event.target.children[0]);
   }
 });
+
 
 ipc.on('data-added', function(data) {
   images = data
