@@ -71,15 +71,19 @@ mb.on('ready', function ready () {
   window.webContents.on('did-finish-load', function() {
     try {
      //test to see if settings exist
-     var path = mb.app.getPath('userData') + '/library.gifwit'
-     fs.openSync(path, 'r+'); //throws error if file doesn't exist
-     var data=fs.readFileSync(path); //file exists, get the contents
+     var filepath = path.join(mb.app.getPath('userData'), 'library.gifwit')
+     fs.openSync(filepath, 'r+'); //throws error if file doesn't exist
+     var data=fs.readFileSync(filepath); //file exists, get the contents
      mb.gifwit = JSON.parse(data); //turn to js object
      window.webContents.send('data-added',mb.gifwit.images);
      } catch (err) {
-       console.log(err)
-       //if error, then there was no settings file (first run).
-       console.log("Gifwit Library missing from "+mb.app.getPath('userData')+'/library.gifwit')
+       try {
+          var fd = fs.openSync(filepath, 'w+');
+          console.log("Created gifwit library");
+        } catch (err) {
+          console.log("Error creating Library file: " + JSON.stringify(err));
+          throw err;
+        }
      }
 
   })
@@ -94,7 +98,8 @@ mb.on('ready', function ready () {
   })
 
   ipc.on('open-config',function () {
-    shell.showItemInFolder(path.join(mb.app.getPath('userData'), 'library.gifwit'))
+    var filepath = path.join(mb.app.getPath('userData'), 'library.gifwit')
+    shell.showItemInFolder(filepath)
   })
 
   mb.on('show', function () {
