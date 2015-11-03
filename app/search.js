@@ -19,7 +19,7 @@ function search (query) {
   } else {
     searching = setTimeout(function () {
       var results = images.filter(function(image){
-        return ((image.keywords.match(query) || image.url.match(query)) && image)
+        return ((image.keywords.match(query) || image.url == query) && image)
       });
       addImageResults(results)
       if(results.length == 0) {
@@ -98,6 +98,10 @@ function sendImage(element) {
   ipc.send("url-to-clipboard",element.src);
 }
 
+function deleteImage(element) {
+  ipc.send("remove-from-library",element.src);
+}
+
 function addImageResults(data) {
   var node = document.getElementById("images");
   var last;
@@ -143,6 +147,10 @@ document.addEventListener('keydown', function (event) {
       sendImage(event.target.children[0]);
     } else if (event.target.id == 'tags') {
       addToLibrary();
+    }
+  } else if(event.keyCode == 8) {
+    if(event.target.className.match('wrapper')) {
+      deleteImage(event.target.children[0])
     }
   }
 });

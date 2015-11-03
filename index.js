@@ -1,4 +1,4 @@
-
+var dialog = require('dialog')
 var fs = require('fs')
 var path = require('path')
 var shell = require('shell')
@@ -113,6 +113,30 @@ mb.on('ready', function ready () {
     catch (err) {
       console.log("Error saving library update")
       window.webContents.send('save-error',err);
+    }
+
+  })
+
+  ipc.on('remove-from-library',function(data,returnVal) {
+    var canDelete = dialog.showMessageBox({type: "question",title:"Are you sure?",buttons: ["Yes","No"],message: "Are you sure you wan't to delete this image?"})
+
+    if(canDelete == 0) {
+      mb.gifwit.images = mb.gifwit.images.filter(function(image){
+        return (image.url != returnVal && image)
+      });
+
+      try {
+        var fd = fs.openSync(filepath, 'w+');
+        fs.writeSync(fd,JSON.stringify(mb.gifwit))
+        console.log("Library update saved")
+        window.webContents.send('data-added',mb.gifwit.images);
+      }
+      catch (err) {
+        console.log("Error saving library update")
+        window.webContents.send('save-error',err);
+      }
+    } else {
+      console.log("Not deleting")
     }
 
   })
