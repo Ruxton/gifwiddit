@@ -95,6 +95,7 @@ function addImageResult(element, index, array) {
   wrap.addEventListener("dblclick",sendImageDblClick);
 
   var tags = document.createElement("p");
+  tags.setAttribute("class","tags");
   tags.innerText = element.keywords
 
   var sizeElem = document.createElement("span")

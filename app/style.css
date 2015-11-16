@@ -1,6 +1,7 @@
 body {
   padding: 0;
   margin: 0;
+  font-family: sans-serif;
 }
 
 .search {
@@ -24,12 +25,42 @@ h1 {
   padding: 0;
 }
 
+.wrapper {
+  display:  inline-block;
+  margin-bottom: 20px;
+  position: relative;
+}
+
 #images {
   padding: 10px;
 }
 
 #images a {
   text-decoration: none;
+}
+
+.wrapper .filesize {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  color: #FFF;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.wrapper:hover .filesize, .wrapper:focus .filesize {
+  display: block;
+  background: rgba(0, 0, 0, .3);
+}
+
+.tags {
+  margin: 0;
+  text-align :center;
+  color: #888888;
 }
 
 footer {
