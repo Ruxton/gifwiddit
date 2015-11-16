@@ -43,6 +43,24 @@ function addToLibrary() {
   ipc.send("add-to-library",obj)
 }
 
+function sizeInBytes(url,elem) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('HEAD', url, true);
+  xhr.onreadystatechange = function(){
+    if ( xhr.readyState == 4 ) {
+      if ( xhr.status == 200 ) {
+        elem.innerHTML = fileSizeSI(xhr.getResponseHeader('Content-Length'))
+      }
+    }
+  };
+  xhr.send(null);
+}
+
+function fileSizeSI(a,b,c,d,e){
+ return (b=Math,c=b.log,d=1e3,e=c(a)/c(d)|0,a/b.pow(d,e)).toFixed(2)
+ +' '+(e?'kMGTPEZY'[--e]+'B':'Bytes')
+}
+
 function setupAddNewImage(query) {
   var button = document.createElement("button")
   button.innerText = "Add to library.."
@@ -79,7 +97,13 @@ function addImageResult(element, index, array) {
   var tags = document.createElement("p");
   tags.innerText = element.keywords
 
+  var sizeElem = document.createElement("span")
+  sizeElem.setAttribute("class","filesize")
+
+  sizeInBytes(element.url,sizeElem);
+
   wrap.appendChild(elem);
+  wrap.appendChild(sizeElem);
   wrap.appendChild(tags);
 
   document.getElementById('images').appendChild(wrap);

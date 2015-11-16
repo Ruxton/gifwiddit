@@ -1,7 +1,7 @@
 
 {
-  "name": "gifwit-ruxton",
-  "version": "0.0.1",
+  "name": "gifwiddit-ruxton",
+  "version": "0.3.0",
   "description": "Electro n Fool.",
   "dependencies": {
     "menubar": "*"
@@ -12,7 +12,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "build": "electron-packager . Gifwit --platform=darwin --arch=x64 --version=0.34.1",
+    "build": "electron-packager . Gifwiddit --platform=darwin --arch=x64 --version=0.34.1 --app-version=0.3.0 --cache=$HOME/.gifwiddit --asar",
     "start": "electron ."
   }
 }
