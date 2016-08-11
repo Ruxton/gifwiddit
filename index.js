@@ -7,7 +7,7 @@ var clipb = require('clipboard')
 var menubar = require('menubar')
 var globalShortcut = require('global-shortcut')
 
-var mb = menubar({preloadWindow: true, dir: __dirname + '/app', width: 400})
+var mb = menubar({preloadWindow: true, dir: __dirname + '/app', width: 300})
 var Menu = require('menu')
 
 var menuTemplate = [
