@@ -22,7 +22,7 @@
 
 @font-face {
     font-family: 'titlefont';
-    src: url('assets/fonts/webfont.woff') format('woff');
+    src: url('../fonts/webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
@@ -63,6 +63,7 @@ h1 {
   text-align: center;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
 .wrapper:hover .filesize, .wrapper:focus .filesize {

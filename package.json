@@ -1,18 +1,17 @@
-
 {
   "name": "gifwiddit-ruxton",
-  "version": "0.3.0",
+  "version": "0.2.5",
   "description": "Electro n Fool.",
   "dependencies": {
     "menubar": "*"
   },
   "devDependencies": {
-    "electron-packager": "^5.1.0",
-    "electron-prebuilt": "^0.34.1"
+    "electron-packager": "^7.0.0",
+    "electron-prebuilt": "^1.3.3"
   },
   "main": "index.js",
   "scripts": {
-    "build": "electron-packager . Gifwiddit --platform=darwin --arch=x64 --version=0.34.1 --app-version=0.3.0 --cache=$HOME/.gifwiddit --asar",
-    "start": "electron ."
+    "build": "./node_modules/.bin/electron-packager . Gifwiddit --platform=darwin --arch=x64 --version=1.3.3 --app-version=0.2.4 --cache=$HOME/.gifwiddit --asar --overwrite",
+    "start": "./node_modules/.bin/electron . --disable-gpu"
   }
 }

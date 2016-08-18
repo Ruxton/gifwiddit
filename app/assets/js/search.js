@@ -1,4 +1,5 @@
-var ipc = require('ipc');
+const {ipcRenderer} = require('electron')
+
 var searchInput = document.querySelector('.js-search')
 var title = document.querySelector('h1')
 var images = []
@@ -40,7 +41,7 @@ function addToLibrary() {
     'keywords': tags
   }
 
-  ipc.send("add-to-library",obj)
+  ipcRenderer.send("add-to-library",obj)
 }
 
 function sizeInBytes(url,elem) {
@@ -120,11 +121,11 @@ function sendImageDblClick(event) {
 }
 
 function sendImage(element) {
-  ipc.send("url-to-clipboard",element.src);
+  ipcRenderer.send("url-to-clipboard",element.src);
 }
 
 function deleteImage(element) {
-  ipc.send("remove-from-library",element.src);
+  ipcRenderer.send("remove-from-library",element.src);
 }
 
 function addImageResults(data) {
@@ -140,11 +141,11 @@ searchInput.addEventListener('input', function (event) {
 })
 
 document.getElementById('quit').addEventListener('click', function (event) {
-  ipc.send("quit")
+  ipcRenderer.send("quit")
 })
 
 document.getElementById('open-config').addEventListener('click', function (event) {
-  ipc.send("open-config")
+  ipcRenderer.send("open-config")
 })
 
 document.addEventListener('keydown', function (event) {
@@ -181,17 +182,17 @@ document.addEventListener('keydown', function (event) {
 });
 
 
-ipc.on('data-added', function(data) {
+ipcRenderer.on('data-added', function(event,data) {
   images = data
   searchInput.value = ""
   search('')
 });
 
-ipc.on('show', function () {
+ipcRenderer.on('show', function () {
   searchInput.focus();
   window.scrollTo(0,0)
 });
 
-ipc.on('save-error', function(err) {
+ipcRenderer.on('save-error', function(err) {
   alert("Error saving - "+err)
 });
