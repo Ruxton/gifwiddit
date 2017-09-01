@@ -72,9 +72,7 @@ mb.on('after-create-window', function () {
       try {
         var fd = fs.openSync(filepath, 'w+');
         mb.gifwit = {version: 1,images:[]}
-        console.log("Created gifwit library");
       } catch (err) {
-        console.log("Error creating Library file: " + JSON.stringify(err));
         throw err;
       }
     }
@@ -96,8 +94,40 @@ mb.on('ready', function ready () {
     mb.app.quit()
   })
 
-  ipcMain.on('open-config',function () {
-    shell.showItemInFolder(filepath)
+  ipcMain.on('select-library', function () {
+    dialog.showOpenDialog({properties: ['openFile'],message:"Locate Gifwit library file", filters:[{name: 'GifWit Library', extensions: ['gifwit']}]},(fileNames) => {
+        // fileNames is an array that contains all the selected
+        if(fileNames === undefined){
+            alert("No library file selected");
+            return;
+        }
+
+        libraryPath = fileNames[0]
+        savePath = path.join(mb.app.getPath('userData'), 'library.gifwit')
+
+        if(libraryPath != undefined) {
+          fs.readFile(libraryPath, 'utf-8', (err, data) => {
+              if(err){
+                  alert("An error ocurred reading the file :" + err.message);
+                  return;
+              }
+              var shouldOverwrite = dialog.showMessageBox({type: "question",title:"Are you sure?",buttons: ["Yes","No"],message: "This will overwrite your existng library, are you sure?"})
+              if(shouldOverwrite == 0) {
+                fs.writeFile (savePath, data, function(err2) {
+                  if(err2){
+                      alert("An error ocurred writing the file :" + err2.message);
+                      return;
+                  }
+                });
+
+                mb.gifwit = JSON.parse(data); //turn to js object
+                mb.window.webContents.send('data-added',mb.gifwit.images);
+              }
+          });
+        } else {
+          alert("No library file selected")
+        }
+    });
   })
 
   ipcMain.on('add-to-library',function(data,returnVal) {
@@ -105,11 +135,9 @@ mb.on('ready', function ready () {
     try {
       var fd = fs.openSync(filepath, 'w+');
       fs.writeSync(fd,JSON.stringify(mb.gifwit))
-      console.log("Library update saved")
       mb.window.webContents.send('data-added',mb.gifwit.images);
     }
     catch (err) {
-      console.log("Error saving library update")
       mb.window.webContents.send('save-error',err);
     }
 
@@ -126,17 +154,12 @@ mb.on('ready', function ready () {
       try {
         var fd = fs.openSync(filepath, 'w+');
         fs.writeSync(fd,JSON.stringify(mb.gifwit))
-        console.log("Library update saved")
         window.webContents.send('data-added',mb.gifwit.images);
       }
       catch (err) {
-        console.log("Error saving library update")
         window.webContents.send('save-error',err);
       }
-    } else {
-      console.log("Not deleting")
     }
-
   })
 
   mb.on('show', function () {

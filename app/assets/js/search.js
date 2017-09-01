@@ -144,8 +144,8 @@ document.getElementById('quit').addEventListener('click', function (event) {
   ipcRenderer.send("quit")
 })
 
-document.getElementById('open-config').addEventListener('click', function (event) {
-  ipcRenderer.send("open-config")
+document.getElementById('select-library').addEventListener('click', function (event) {
+  ipcRenderer.send("select-library")
 })
 
 document.addEventListener('keydown', function (event) {
