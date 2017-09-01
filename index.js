@@ -1,11 +1,10 @@
-const {dialogs,shell,ipcMain,clipboard,globalShortcut,Menu} = require('electron')
+const {dialog,shell,ipcMain,clipboard,globalShortcut,Menu} = require('electron')
 
 var fs = require('fs')
 var path = require('path')
 var menubar = require('menubar')
 
 var mb = menubar({dir: __dirname + '/app', width: 300, preloadWindow: true})
-mb.app.commandLine.appendSwitch('--disable-gpu')
 
 var menuTemplate = [
   {
